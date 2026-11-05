@@ -1029,6 +1029,14 @@ internal static class SettingsMigrations
         //      if another change takes it first.)
         if (from < 69 && presets.All(p => p.Id != "translate"))
             changed |= AddTranslatePreset(presets);
+        // v70: the "Metadata" tool, in the palette only, after "Add background" as in a new library (at the end
+        //      without it). (Schema 70 may be renumbered if another change takes it first.)
+        if (from < 70 && presets.All(p => p.Id != BuiltInData.MetadataId))
+        {
+            var background = presets.FindIndex(p => p.Id == BuiltInData.BackgroundId);
+            presets.InsertRange(background < 0 ? presets.Count : background + 1, BuiltInData.MetadataPresets());
+            changed = true;
+        }
         return changed;
     }
 
